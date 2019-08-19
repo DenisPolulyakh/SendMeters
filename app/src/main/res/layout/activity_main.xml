@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SendEmailActivity">
+
+    <TextView
+        android:id="@+id/tvKitchen"
+        android:layout_width="105dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/Kitchen"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.02"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.051" />
+
+    <TextView
+        android:id="@+id/tvKitchenColdWater"
+        android:layout_width="180dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="5dp"
+        android:text="@string/ColdWaterMeter"
+        app:layout_constraintStart_toStartOf="@+id/tvKitchen"
+        app:layout_constraintTop_toBottomOf="@+id/tvKitchen" />
+
+    <TextView
+        android:id="@+id/tvKitchenColdWaterNumber"
+        android:layout_width="90dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvKitchenColdWater"
+        app:layout_constraintStart_toEndOf="@+id/tvKitchenColdWater"
+        app:layout_constraintTop_toTopOf="@+id/tvKitchenColdWater" />
+
+    <EditText
+        android:id="@+id/etKithenColdWaterMeter"
+        android:layout_width="280dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:inputType="number"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/tvKitchenColdWaterNumber"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tvKitchenColdWater"
+        app:layout_constraintTop_toBottomOf="@+id/tvKitchenColdWater" />
+
+    <TextView
+        android:id="@+id/twKitchenHotWater"
+        android:layout_width="180dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/HotWaterMeter"
+        app:layout_constraintStart_toStartOf="@+id/etKithenColdWaterMeter"
+        app:layout_constraintTop_toBottomOf="@+id/etKithenColdWaterMeter" />
+
+    <TextView
+        android:id="@+id/tvKitchenHotWaterNumber"
+        android:layout_width="90dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/twKitchenHotWater"
+        app:layout_constraintStart_toEndOf="@+id/twKitchenHotWater"
+        app:layout_constraintTop_toTopOf="@+id/twKitchenHotWater" />
+
+    <EditText
+        android:id="@+id/etKithenHotWaterMeter"
+        android:layout_width="280dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:inputType="number"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/tvKitchenHotWaterNumber"
+        app:layout_constraintStart_toStartOf="@+id/twKitchenHotWater"
+        app:layout_constraintTop_toBottomOf="@+id/twKitchenHotWater" />
+
+    <TextView
+        android:id="@+id/tvBatroom"
+        android:layout_width="105dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/BathRoom"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/etKithenHotWaterMeter"
+        app:layout_constraintTop_toBottomOf="@+id/etKithenHotWaterMeter" />
+
+    <TextView
+        android:id="@+id/tvBathroomColdWater"
+        android:layout_width="180dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="5dp"
+        android:text="@string/ColdWaterMeter"
+        app:layout_constraintStart_toStartOf="@+id/tvBatroom"
+        app:layout_constraintTop_toBottomOf="@+id/tvBatroom" />
+
+    <TextView
+        android:id="@+id/tvBathroomColdWaterNumber"
+        android:layout_width="90dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvBathroomColdWater"
+        app:layout_constraintStart_toEndOf="@+id/tvBathroomColdWater"
+        app:layout_constraintTop_toTopOf="@+id/tvBathroomColdWater" />
+
+    <EditText
+        android:id="@+id/etBathroomColdWaterMeter"
+        android:layout_width="280dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:inputType="number"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/tvBathroomColdWater"
+        app:layout_constraintTop_toBottomOf="@+id/tvBathroomColdWater" />
+
+    <TextView
+        android:id="@+id/tvBathroomHotWater"
+        android:layout_width="180dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/HotWaterMeter"
+        app:layout_constraintStart_toStartOf="@+id/etBathroomColdWaterMeter"
+        app:layout_constraintTop_toBottomOf="@+id/etBathroomColdWaterMeter" />
+
+    <TextView
+        android:id="@+id/tvBathroomHotWaterNumber"
+        android:layout_width="90dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvBathroomHotWater"
+        app:layout_constraintStart_toEndOf="@+id/tvBathroomHotWater"
+        app:layout_constraintTop_toTopOf="@+id/tvBathroomHotWater" />
+
+    <EditText
+        android:id="@+id/etBathroomHotWaterMeter"
+        android:layout_width="280dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:inputType="number"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/tvBathroomHotWaterNumber"
+        app:layout_constraintStart_toStartOf="@+id/tvBathroomHotWater"
+        app:layout_constraintTop_toBottomOf="@+id/tvBathroomHotWater" />
+
+    <TextView
+        android:id="@+id/tvElectricityMeter"
+        android:layout_width="195dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/ElectricityMeter"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/etBathroomHotWaterMeter"
+        app:layout_constraintTop_toBottomOf="@+id/etBathroomHotWaterMeter" />
+
+    <EditText
+        android:id="@+id/etElectricityMeter"
+        android:layout_width="280dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:inputType="number"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/tvElectricityMeter"
+        app:layout_constraintTop_toBottomOf="@+id/tvElectricityMeter" />
+
+    <Button
+        android:id="@+id/btnCreateEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="5dp"
+        android:text="@string/ButtonCreateEmail"
+        app:layout_constraintEnd_toEndOf="@+id/etElectricityMeter"
+        app:layout_constraintStart_toStartOf="@+id/etElectricityMeter"
+        app:layout_constraintTop_toBottomOf="@+id/etElectricityMeter" />
+
+</android.support.constraint.ConstraintLayout>

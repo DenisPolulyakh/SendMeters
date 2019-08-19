@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">SendMeters</string>
+    <string name="Kitchen">Кухня</string>
+    <string name="BathRoom">Ванная</string>
+    <string name="HotWaterMeter">Счетчик горячей воды</string>
+    <string name="ColdWaterMeter">Счетчик холодной воды</string>
+    <string name="ElectricityMeter">Электросчетчик</string>
+    <string name="GasMeter">Газовый счетчик</string>
+    <string name="EmailSubject">Показания счетчиков {year} {month} 101 кв. Полулях</string>
+    <string name="EmailTo">mail19861@rambler.ru</string>
+    <string name="EmailToMy">denis.polulyakh denis.polulyakh@gmail.com</string>
+    <string name="EmailFrom">mail19861@rambler.ru@mail.ru</string>
+    <string name="EmailText"><![CDATA[Здравствуйте</div>
+<div>
+показания счетчиков за <strong>{month}</strong>.</div>
+<div>
+Адрес: <strong>ул. 4-я линия, д. 22/24</strong>.&nbsp;</div>
+<div>
+Квартира: <strong>101</strong>.</div>
+<div>
+Собственник: <strong>Полулях Д.М</strong>.</div>
+<div>
+&nbsp;</div>
+<div>
+ХВС 1 ({KithenColdWaterNumber}) - {KithenColdWaterMeter},</div>
+<div>
+ХВС 2 ({BathRoomColdWaterNumber}) -{BathRoomColdWaterMeter},</div>
+<div>
+ГВС 3 ({KithenHotWaterNumber}) - {KithenHotWaterMeter},</div>
+<div>
+ГВС 4 ({BathRoomHotWaterNumber}) - {BathRoomHotWaterMeter},</div>
+<div>
+Электросчетчик - {ElectricityMeter}</div>
+<div>
+&nbsp;</div>
+<div>
+C уважением, Денис Полулях.</div>
+</div>
+</div>
+<p>]]></string>
+
+    <string name="KithenColdWaterNumber">2710267</string>
+    <string name="BathRoomColdWaterNumber">28472685</string>
+    <string name="KithenHotWaterNumber">2634870</string>
+    <string name="BathRoomHotWaterNumber">28472811</string>
+    <string name="ButtonCreateEmail">Сформировать письмо</string>
+</resources>
