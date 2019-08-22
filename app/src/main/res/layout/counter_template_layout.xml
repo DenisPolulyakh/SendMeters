@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/counterLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+    <ru.startandroid.sendmeters.ru.startandroid.sendmeters.datapicker.DataPicker
+        android:id="@+id/dp1"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="250dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginRight="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ru.startandroid.sendmeters.ru.startandroid.sendmeters.datapicker.DataPicker
+        android:id="@+id/dp10"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/dp1"
+        app:layout_constraintEnd_toStartOf="@+id/dp1"
+        app:layout_constraintTop_toTopOf="@+id/dp1" />
+
+    <ru.startandroid.sendmeters.ru.startandroid.sendmeters.datapicker.DataPicker
+        android:id="@+id/dp100"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/dp10"
+        app:layout_constraintEnd_toStartOf="@+id/dp10"
+        app:layout_constraintTop_toTopOf="@+id/dp10" />
+
+    <ru.startandroid.sendmeters.ru.startandroid.sendmeters.datapicker.DataPicker
+        android:id="@+id/dp1000"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/dp100"
+        app:layout_constraintEnd_toStartOf="@+id/dp100"
+        app:layout_constraintTop_toTopOf="@+id/dp100"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ru.startandroid.sendmeters.ru.startandroid.sendmeters.datapicker.DataPicker
+        android:id="@+id/dp10000"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/dp1000"
+        app:layout_constraintEnd_toStartOf="@+id/dp1000"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/dp1000"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/tvNameRoom"
+        android:layout_width="220dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="152dp"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/dp100"
+        app:layout_constraintEnd_toEndOf="@+id/dp1"
+        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintStart_toStartOf="@+id/dp10000" />
+
+    <TextView
+        android:id="@+id/tvDescriptionCount"
+        android:layout_width="220dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvNameRoom"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tvNameRoom"
+        app:layout_constraintTop_toBottomOf="@+id/tvNameRoom" />
+
+    <TextView
+        android:id="@+id/tvNumberCount"
+        android:layout_width="220dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/tvDescriptionCount"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tvDescriptionCount"
+        app:layout_constraintTop_toBottomOf="@+id/tvDescriptionCount" />
+
+
+</android.support.constraint.ConstraintLayout>
