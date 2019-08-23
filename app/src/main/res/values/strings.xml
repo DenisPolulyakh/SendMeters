@@ -44,4 +44,5 @@ C уважением, Денис Полулях.</div>
     <string name="KithenHotWaterNumber">2634870</string>
     <string name="BathRoomHotWaterNumber">28472811</string>
     <string name="ButtonCreateEmail">Сформировать письмо</string>
+    <string name="ButtonAddCounter">Добавить счетчик</string>
 </resources>
