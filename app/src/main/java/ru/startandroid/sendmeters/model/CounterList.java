@@ -1,6 +1,6 @@
 package ru.startandroid.sendmeters.model;
 
-import android.view.View;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,13 +10,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Counter {
-    private String room;
-    private String description;
-    private String number;
-    private String meter;
-
+public class CounterList {
+    private List<Counter> countersList;
 }

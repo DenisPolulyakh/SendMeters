@@ -3,6 +3,8 @@ package ru.startandroid.sendmeters;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
@@ -17,13 +19,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import org.w3c.dom.Text;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import ru.startandroid.sendmeters.model.Counter;
+import ru.startandroid.sendmeters.model.CounterList;
 import ru.startandroid.sendmeters.ru.startandroid.sendmeters.datapicker.DataPicker;
 
 public class SendEmailActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
@@ -38,6 +41,8 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
     private float fromPosition;
     private ViewFlipper flipper;
     private LayoutInflater inflater;
+    private SharedPreferences mPrefs;
+    private final static String COUNTERS = "Counters";
 
     String[] monthNames = {"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
 
@@ -46,34 +51,50 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        getSupportActionBar().hide();
+        mPrefs = getPreferences(MODE_PRIVATE);
 
         counters = new ArrayList<>();
         // Устанавливаем listener касаний, для последующего перехвата жестов
         ConstraintLayout mainLayout = (ConstraintLayout) findViewById(R.id.mainLayout);
         mainLayout.setOnTouchListener(this);
-        getSupportActionBar().hide();
+
         // Получаем объект ViewFlipper
         flipper = (ViewFlipper) findViewById(R.id.flipper);
 
         // Создаем View и добавляем их в уже готовый flipper
         inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         ConstraintLayout addLayout = (ConstraintLayout) inflater.inflate(R.layout.add_layout, null);
         btnAddCounter = (Button) addLayout.findViewById(R.id.btnAddCounter);
         btnAddCounter.setOnClickListener(this);
         flipper.addView(addLayout);
+
+
+        CounterList counterList = loadFromPreference();
+        if(counterList!=null){
+            int index=0;
+            for(Counter counter: counterList.getCountersList()){
+                ConstraintLayout counterLayout = createCounter(counter);
+                TextView tc = ((TextView) counterLayout.findViewById(R.id.IndexLayout));
+                tc.setText(""+index);
+                flipper.addView(counterLayout);
+            }
+            counters=counterList.getCountersList();
+        }
+
+
+
+
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnAddCounter:
-
                 createCounterDialog(flipper, counters);
-
-
-               // counters.add(counterData);
-               // flipper.addView(counterLayout);
+                // counters.add(counterData);
+                // flipper.addView(counterLayout);
 
         }
     }
@@ -137,12 +158,14 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
                     flipper.setInAnimation(AnimationUtils.loadAnimation(this, R.anim.go_next_in));
                     flipper.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.go_next_out));
                     if (counters.size() > 0) {
+                        saveStateCounter(flipper);
                         flipper.showNext();
                     }
                 } else if (fromPosition < toPosition) {
                     flipper.setInAnimation(AnimationUtils.loadAnimation(this, R.anim.go_prev_in));
                     flipper.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.go_prev_out));
                     if (counters.size() > 0) {
+                        saveStateCounter(flipper);
                         flipper.showPrevious();
                     }
                 }
@@ -162,38 +185,29 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
         tvRoom.setText(counterData.getRoom());
         tvDescriptionCount.setText(counterData.getDescription());
         tvNumberCount.setText(counterData.getNumber());
-
-        DataPicker dp1 = counter.findViewById(R.id.dp1);
-        DataPicker dp10 = counter.findViewById(R.id.dp10);
-        DataPicker dp100 = counter.findViewById(R.id.dp100);
-        DataPicker dp1000 = counter.findViewById(R.id.dp1000);
-        DataPicker dp10000 = counter.findViewById(R.id.dp10000);
+        List<DataPicker> dataPickers = new ArrayList<>();
+        dataPickers.add((DataPicker) counter.findViewById(R.id.dp10000));
+        dataPickers.add((DataPicker) counter.findViewById(R.id.dp1000));
+        dataPickers.add((DataPicker) counter.findViewById(R.id.dp100));
+        dataPickers.add((DataPicker) counter.findViewById(R.id.dp10));
+        dataPickers.add((DataPicker) counter.findViewById(R.id.dp1));
+        String meter = counterData.getMeter();
         String[] numbersCount;
-        for (int i = 0; i < 5; i++) {
+        for (DataPicker dp : dataPickers) {
             numbersCount = new String[10];
             for (int j = 0; j < 10; j++) {
                 numbersCount[j] = "" + j;
             }
-            switch (i) {
-                case 0:
-                    dp1.setValues(numbersCount);
-                    break;
-                case 1:
-                    dp10.setValues(numbersCount);
-                    break;
-                case 2:
-                    dp100.setValues(numbersCount);
-                    break;
-                case 3:
-                    dp1000.setValues(numbersCount);
-                    break;
-                case 4:
-                    dp10000.setValues(numbersCount);
-                    break;
-            }
-
+            dp.setValues(numbersCount);
         }
+        if (meter != null) {
+            for (int i = 4; i >= 0; i--) {
+                dataPickers.get(i).changetToValue(Integer.parseInt(""+meter.charAt(i)));
+            }
+        }
+
         return counter;
+
     }
 
 
@@ -227,7 +241,8 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         ConstraintLayout counterLayout = createCounter(counter);
-                        counter.setView(counterLayout);
+                        TextView tc = ((TextView) counterLayout.findViewById(R.id.IndexLayout));
+                        tc.setText("" + counters.size());
                         counters.add(counter);
                         flipper.addView(counterLayout);
                     }
@@ -240,5 +255,48 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
         alertDialog.show();
 
 
+    }
+
+    private void saveStateCounter(ViewFlipper flipper) {
+        ConstraintLayout counterView = (ConstraintLayout) flipper.getCurrentView();
+        TextView indexTv = (TextView) counterView.findViewById(R.id.IndexLayout);
+        if (indexTv != null) {
+            Integer index = Integer.parseInt(indexTv.getText().toString());
+            List<DataPicker> dataPickers = new ArrayList<>();
+            dataPickers.add((DataPicker) counterView.findViewById(R.id.dp10000));
+            dataPickers.add((DataPicker) counterView.findViewById(R.id.dp1000));
+            dataPickers.add((DataPicker) counterView.findViewById(R.id.dp100));
+            dataPickers.add((DataPicker) counterView.findViewById(R.id.dp10));
+            dataPickers.add((DataPicker) counterView.findViewById(R.id.dp1));
+            StringBuilder meter = new StringBuilder();
+            for (DataPicker dp : dataPickers) {
+                meter.append(dp.getValue());
+
+            }
+            Counter counter = counters.get(index);
+            if (!meter.toString().equals(counter.getMeter())) {
+                counter.setMeter(meter.toString());
+                CounterList counterList = new CounterList(counters);
+                saveToPreference(counterList);
+            }
+
+
+        }
+    }
+
+    private void saveToPreference(CounterList counterList) {
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(counterList);
+        prefsEditor.putString(COUNTERS, json);
+        prefsEditor.commit();
+
+    }
+
+    private CounterList loadFromPreference() {
+        Gson gson = new Gson();
+        String json = mPrefs.getString(COUNTERS, "");
+        CounterList counterList = gson.fromJson(json, CounterList.class);
+        return counterList;
     }
 }
