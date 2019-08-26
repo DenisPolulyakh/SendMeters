@@ -13,9 +13,12 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewParent;
 import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
@@ -45,7 +48,7 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
     private final static String COUNTERS = "Counters";
 
     String[] monthNames = {"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
-
+    String[] valiables = {"Кухня. Cчетчик холодной воды", "Кухня. Cчетчик горячей воды воды", "Ванная. Счетчик холодной воды", "Ванная. Cчетчик горячей воды", "Электрический счетчик"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,18 +75,16 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
 
 
         CounterList counterList = loadFromPreference();
-        if(counterList!=null){
-            int index=0;
-            for(Counter counter: counterList.getCountersList()){
+        if (counterList != null) {
+            int index = 0;
+            for (Counter counter : counterList.getCountersList()) {
                 ConstraintLayout counterLayout = createCounter(counter);
                 TextView tc = ((TextView) counterLayout.findViewById(R.id.IndexLayout));
-                tc.setText(""+index);
+                tc.setText("" + index);
                 flipper.addView(counterLayout);
             }
-            counters=counterList.getCountersList();
+            counters = counterList.getCountersList();
         }
-
-
 
 
     }
@@ -95,8 +96,16 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
                 createCounterDialog(flipper, counters);
                 // counters.add(counterData);
                 // flipper.addView(counterLayout);
+                break;
+            case R.id.btnDelete:
+                deleteCounter(v);
 
         }
+    }
+
+    private void deleteCounter(View v) {
+        ViewParent parent = v.getParent();
+
     }
 
     private void createEmail() {
@@ -160,6 +169,7 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
                     if (counters.size() > 0) {
                         saveStateCounter(flipper);
                         flipper.showNext();
+
                     }
                 } else if (fromPosition < toPosition) {
                     flipper.setInAnimation(AnimationUtils.loadAnimation(this, R.anim.go_prev_in));
@@ -181,6 +191,8 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
         TextView tvRoom = counter.findViewById(R.id.tvNameRoom);
         TextView tvDescriptionCount = counter.findViewById(R.id.tvDescriptionCount);
         TextView tvNumberCount = counter.findViewById(R.id.tvNumberCount);
+        Button btnDelete = counter.findViewById(R.id.btnDelete);
+        btnDelete.setOnClickListener(this);
 
         tvRoom.setText(counterData.getRoom());
         tvDescriptionCount.setText(counterData.getDescription());
@@ -202,7 +214,7 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
         }
         if (meter != null) {
             for (int i = 4; i >= 0; i--) {
-                dataPickers.get(i).changetToValue(Integer.parseInt(""+meter.charAt(i)));
+                dataPickers.get(i).changetToValue(Integer.parseInt("" + meter.charAt(i)));
             }
         }
 
@@ -216,19 +228,31 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 this);
         alertDialogBuilder.setView(editCounter);
-        final EditText room = (EditText) editCounter.findViewById(R.id.etRoom);
-        final EditText description = (EditText) editCounter.findViewById(R.id.etDescr);
         final EditText number = (EditText) editCounter.findViewById(R.id.etNumber);
         final Counter counter = new Counter();
+
+
+        // Подключаем свой шаблон с разными значками
+        // адаптер
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, valiables);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        final Spinner spinner = (Spinner) editCounter.findViewById(R.id.SpiVar);
+        spinner.setAdapter(adapter);
+
         // set dialog message
         alertDialogBuilder
                 .setCancelable(false)
                 .setPositiveButton("Добавить счетчик",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                counter.setDescription(description.getText().toString());
-                                counter.setRoom(room.getText().toString());
                                 counter.setNumber(number.getText().toString());
+                                counter.setValiable(spinner.getSelectedItem().toString());
+                                if (spinner.getSelectedItem().toString().indexOf(".") != -1) {
+                                    counter.setRoom(spinner.getSelectedItem().toString().substring(0, spinner.getSelectedItem().toString().indexOf(".")));
+                                    counter.setDescription(spinner.getSelectedItem().toString().substring(spinner.getSelectedItem().toString().indexOf(".") + 1, spinner.getSelectedItem().toString().length()));
+                                } else {
+                                    counter.setDescription(spinner.getSelectedItem().toString());
+                                }
                             }
                         })
                 .setNegativeButton("Отмена",

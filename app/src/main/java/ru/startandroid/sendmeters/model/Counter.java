@@ -18,5 +18,6 @@ public class Counter {
     private String description;
     private String number;
     private String meter;
+    private String valiable;
 
 }

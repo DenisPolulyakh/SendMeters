@@ -22,15 +22,15 @@
 <div>
 &nbsp;</div>
 <div>
-ХВС 1 ({KithenColdWaterNumber}) - {KithenColdWaterMeter},</div>
+ХВС 1 ({Кухня. Cчетчик холодной воды},</div>
 <div>
-ХВС 2 ({BathRoomColdWaterNumber}) -{BathRoomColdWaterMeter},</div>
+ХВС 2 ({Кухня. Cчетчик горячей воды воды},</div>
 <div>
-ГВС 3 ({KithenHotWaterNumber}) - {KithenHotWaterMeter},</div>
+ГВС 3 ({Ванная. Счетчик холодной воды},</div>
 <div>
-ГВС 4 ({BathRoomHotWaterNumber}) - {BathRoomHotWaterMeter},</div>
+ГВС 4 ({Ванная. Cчетчик горячей воды"},</div>
 <div>
-Электросчетчик - {ElectricityMeter}</div>
+Электросчетчик - {Электрический счетчик}</div>
 <div>
 &nbsp;</div>
 <div>
@@ -45,4 +45,5 @@ C уважением, Денис Полулях.</div>
     <string name="BathRoomHotWaterNumber">28472811</string>
     <string name="ButtonCreateEmail">Сформировать письмо</string>
     <string name="ButtonAddCounter">Добавить счетчик</string>
+    <string name="Delete">Удалить</string>
 </resources>
