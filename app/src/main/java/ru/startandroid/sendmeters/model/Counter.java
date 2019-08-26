@@ -15,9 +15,8 @@ import lombok.Setter;
 @Builder
 public class Counter {
     private String room;
-    private String description;
     private String number;
     private String meter;
-    private String valiable;
+    private String description;
 
 }

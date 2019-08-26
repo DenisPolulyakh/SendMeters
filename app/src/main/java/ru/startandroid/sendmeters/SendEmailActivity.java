@@ -39,6 +39,7 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
     private EditText etBathroomHotWaterMeter;
     private EditText etElectricityMeter;
     private Button btnAddCounter;
+    private Button btnSendMeter;
 
     private List<Counter> counters;
     private float fromPosition;
@@ -48,7 +49,7 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
     private final static String COUNTERS = "Counters";
 
     String[] monthNames = {"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
-    String[] valiables = {"Кухня. Cчетчик холодной воды", "Кухня. Cчетчик горячей воды воды", "Ванная. Счетчик холодной воды", "Ванная. Cчетчик горячей воды", "Электрический счетчик"};
+    String[] valiables = {"Кухня. Cчетчик холодной воды", "Кухня. Cчетчик горячей воды", "Ванная. Счетчик холодной воды", "Ванная. Cчетчик горячей воды", "Электрический счетчик"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +72,8 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
         ConstraintLayout addLayout = (ConstraintLayout) inflater.inflate(R.layout.add_layout, null);
         btnAddCounter = (Button) addLayout.findViewById(R.id.btnAddCounter);
         btnAddCounter.setOnClickListener(this);
+        btnSendMeter = (Button) addLayout.findViewById(R.id.btnSendMeter);
+        btnSendMeter.setOnClickListener(this);
         flipper.addView(addLayout);
 
 
@@ -99,12 +102,22 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.btnDelete:
                 deleteCounter(v);
+                ViewParent vp = v.getParent();
+                break;
+            case R.id.btnSendMeter:
+                    createEmail();
+                    break;
 
         }
     }
 
     private void deleteCounter(View v) {
-        ViewParent parent = v.getParent();
+        View currentView = flipper.getCurrentView();
+        String index = ((TextView)currentView.findViewById(R.id.IndexLayout)).getText().toString();
+        counters.remove(Integer.parseInt(index));
+        flipper.removeView(currentView);
+        CounterList counterList = new CounterList(counters);
+        saveToPreference(counterList);
 
     }
 
@@ -131,23 +144,16 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
     private String getTextEmail() {
         Calendar calendar = Calendar.getInstance();
         String month = monthNames[calendar.get(Calendar.MONTH)].toLowerCase();
-        String kitchenColdWater = etKithenColdWaterMeter.getText().toString();
-        String kitchenHotWater = etKithenHotWaterMeter.getText().toString();
-        String bathroomColdWater = etBathroomColdWaterMeter.getText().toString();
-        String bathroomHotWater = etBathroomHotWaterMeter.getText().toString();
-        String electricity = etElectricityMeter.getText().toString();
-
         String patternEmail = getResources().getString(R.string.EmailText);
         patternEmail = patternEmail.replace("{month}", month);
-        patternEmail = patternEmail.replace("{KithenColdWaterNumber}", getResources().getString(R.string.KithenColdWaterNumber));
-        patternEmail = patternEmail.replace("{BathRoomColdWaterNumber}", getResources().getString(R.string.BathRoomColdWaterNumber));
-        patternEmail = patternEmail.replace("{KithenHotWaterNumber}", getResources().getString(R.string.KithenHotWaterNumber));
-        patternEmail = patternEmail.replace("{BathRoomHotWaterNumber}", getResources().getString(R.string.BathRoomHotWaterNumber));
-        patternEmail = patternEmail.replace("{KithenColdWaterMeter}", kitchenColdWater);
-        patternEmail = patternEmail.replace("{BathRoomColdWaterMeter}", bathroomColdWater);
-        patternEmail = patternEmail.replace("{KithenHotWaterMeter}", kitchenHotWater);
-        patternEmail = patternEmail.replace("{BathRoomHotWaterMeter}", bathroomHotWater);
-        patternEmail = patternEmail.replace("{ElectricityMeter}", electricity);
+        String emailMeter;
+        for(Counter c:counters){
+            emailMeter = "("+c.getNumber()+")" +" - "+c.getMeter();
+            if(c.getDescription().equalsIgnoreCase("Электрический счетчик")){
+                emailMeter = " - "+c.getMeter();
+            }
+            patternEmail = patternEmail.replace(c.getDescription(), emailMeter);
+        }
         return patternEmail;
 
 
@@ -229,7 +235,7 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
                 this);
         alertDialogBuilder.setView(editCounter);
         final EditText number = (EditText) editCounter.findViewById(R.id.etNumber);
-        final Counter counter = new Counter();
+
 
 
         // Подключаем свой шаблон с разными значками
@@ -238,7 +244,7 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         final Spinner spinner = (Spinner) editCounter.findViewById(R.id.SpiVar);
         spinner.setAdapter(adapter);
-
+        final Counter counter = new Counter();
         // set dialog message
         alertDialogBuilder
                 .setCancelable(false)
@@ -246,10 +252,11 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 counter.setNumber(number.getText().toString());
-                                counter.setValiable(spinner.getSelectedItem().toString());
+                                counter.setDescription(spinner.getSelectedItem().toString());
                                 if (spinner.getSelectedItem().toString().indexOf(".") != -1) {
                                     counter.setRoom(spinner.getSelectedItem().toString().substring(0, spinner.getSelectedItem().toString().indexOf(".")));
                                     counter.setDescription(spinner.getSelectedItem().toString().substring(spinner.getSelectedItem().toString().indexOf(".") + 1, spinner.getSelectedItem().toString().length()));
+                                    counter.setDescription(spinner.getSelectedItem().toString());
                                 } else {
                                     counter.setDescription(spinner.getSelectedItem().toString());
                                 }
