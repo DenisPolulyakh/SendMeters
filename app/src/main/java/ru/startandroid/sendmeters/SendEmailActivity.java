@@ -33,11 +33,6 @@ import ru.startandroid.sendmeters.model.CounterList;
 import ru.startandroid.sendmeters.ru.startandroid.sendmeters.datapicker.DataPicker;
 
 public class SendEmailActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
-    private EditText etKithenColdWaterMeter;
-    private EditText etKithenHotWaterMeter;
-    private EditText etBathroomColdWaterMeter;
-    private EditText etBathroomHotWaterMeter;
-    private EditText etElectricityMeter;
     private Button btnAddCounter;
     private Button btnSendMeter;
 
@@ -47,6 +42,8 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
     private LayoutInflater inflater;
     private SharedPreferences mPrefs;
     private final static String COUNTERS = "Counters";
+    private final static String MONTH_SEND = "Month_send";
+    private final static int DAY_START_SEND = 15;
 
     String[] monthNames = {"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
     String[] valiables = {"Кухня. Cчетчик холодной воды", "Кухня. Cчетчик горячей воды", "Ванная. Счетчик холодной воды", "Ванная. Cчетчик горячей воды", "Электрический счетчик"};
@@ -58,7 +55,6 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         getSupportActionBar().hide();
         mPrefs = getPreferences(MODE_PRIVATE);
-
         counters = new ArrayList<>();
         // Устанавливаем listener касаний, для последующего перехвата жестов
         ConstraintLayout mainLayout = (ConstraintLayout) findViewById(R.id.mainLayout);
@@ -74,16 +70,22 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
         btnAddCounter.setOnClickListener(this);
         btnSendMeter = (Button) addLayout.findViewById(R.id.btnSendMeter);
         btnSendMeter.setOnClickListener(this);
+        btnSendMeter.setVisibility(View.INVISIBLE);
+        if (!loadFromPreference(MONTH_SEND).equalsIgnoreCase(getCurrentMonth())) {
+            if (getCurrentDayOfMonth() >= DAY_START_SEND) {
+                btnSendMeter.setVisibility(View.VISIBLE);
+            }
+        }
         flipper.addView(addLayout);
 
 
-        CounterList counterList = loadFromPreference();
+        CounterList counterList = loadCountersFromPreference();
         if (counterList != null) {
             int index = 0;
             for (Counter counter : counterList.getCountersList()) {
                 ConstraintLayout counterLayout = createCounter(counter);
                 TextView tc = ((TextView) counterLayout.findViewById(R.id.IndexLayout));
-                tc.setText("" + index);
+                tc.setText("" + index++);
                 flipper.addView(counterLayout);
             }
             counters = counterList.getCountersList();
@@ -105,19 +107,19 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
                 ViewParent vp = v.getParent();
                 break;
             case R.id.btnSendMeter:
-                    createEmail();
-                    break;
+                createEmail();
+                break;
 
         }
     }
 
     private void deleteCounter(View v) {
         View currentView = flipper.getCurrentView();
-        String index = ((TextView)currentView.findViewById(R.id.IndexLayout)).getText().toString();
+        String index = ((TextView) currentView.findViewById(R.id.IndexLayout)).getText().toString();
         counters.remove(Integer.parseInt(index));
         flipper.removeView(currentView);
         CounterList counterList = new CounterList(counters);
-        saveToPreference(counterList);
+        saveCountersToPreference(counterList);
 
     }
 
@@ -129,6 +131,8 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, getSubjectEmail());
         emailIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(getTextEmail()));
         startActivity(Intent.createChooser(emailIntent, "Выберите email клиент :"));
+        finish();
+        saveToPreference(MONTH_SEND, getCurrentMonth());
     }
 
     private String getSubjectEmail() {
@@ -142,15 +146,13 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
     }
 
     private String getTextEmail() {
-        Calendar calendar = Calendar.getInstance();
-        String month = monthNames[calendar.get(Calendar.MONTH)].toLowerCase();
         String patternEmail = getResources().getString(R.string.EmailText);
-        patternEmail = patternEmail.replace("{month}", month);
+        patternEmail = patternEmail.replace("{month}", getCurrentMonth());
         String emailMeter;
-        for(Counter c:counters){
-            emailMeter = "("+c.getNumber()+")" +" - "+c.getMeter();
-            if(c.getDescription().equalsIgnoreCase("Электрический счетчик")){
-                emailMeter = " - "+c.getMeter();
+        for (Counter c : counters) {
+            emailMeter = "(" + c.getNumber() + ")" + " - " + Integer.parseInt(c.getMeter());
+            if (c.getDescription().equalsIgnoreCase("Электрический счетчик")) {
+                emailMeter = " - " + Integer.parseInt(c.getMeter());
             }
             patternEmail = patternEmail.replace(c.getDescription(), emailMeter);
         }
@@ -198,6 +200,7 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
         TextView tvDescriptionCount = counter.findViewById(R.id.tvDescriptionCount);
         TextView tvNumberCount = counter.findViewById(R.id.tvNumberCount);
         Button btnDelete = counter.findViewById(R.id.btnDelete);
+        btnDelete.setVisibility(View.INVISIBLE);
         btnDelete.setOnClickListener(this);
 
         tvRoom.setText(counterData.getRoom());
@@ -235,7 +238,6 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
                 this);
         alertDialogBuilder.setView(editCounter);
         final EditText number = (EditText) editCounter.findViewById(R.id.etNumber);
-
 
 
         // Подключаем свой шаблон с разными значками
@@ -288,6 +290,12 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
 
     }
 
+    @Override
+    protected void onDestroy() {
+        saveStateCounter(flipper);
+        super.onDestroy();
+    }
+
     private void saveStateCounter(ViewFlipper flipper) {
         ConstraintLayout counterView = (ConstraintLayout) flipper.getCurrentView();
         TextView indexTv = (TextView) counterView.findViewById(R.id.IndexLayout);
@@ -308,14 +316,14 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
             if (!meter.toString().equals(counter.getMeter())) {
                 counter.setMeter(meter.toString());
                 CounterList counterList = new CounterList(counters);
-                saveToPreference(counterList);
+                saveCountersToPreference(counterList);
             }
 
 
         }
     }
 
-    private void saveToPreference(CounterList counterList) {
+    private void saveCountersToPreference(CounterList counterList) {
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
         Gson gson = new Gson();
         String json = gson.toJson(counterList);
@@ -324,10 +332,34 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
 
     }
 
-    private CounterList loadFromPreference() {
+    private CounterList loadCountersFromPreference() {
         Gson gson = new Gson();
         String json = mPrefs.getString(COUNTERS, "");
         CounterList counterList = gson.fromJson(json, CounterList.class);
         return counterList;
+    }
+
+    private void saveToPreference(String variable, String value) {
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        prefsEditor.putString(variable, value);
+        prefsEditor.commit();
+
+    }
+
+    private String loadFromPreference(String variable) {
+        String result = mPrefs.getString(variable, "");
+        return result;
+    }
+
+
+    private String getCurrentMonth() {
+        Calendar calendar = Calendar.getInstance();
+        String month = monthNames[calendar.get(Calendar.MONTH)].toLowerCase();
+        return month;
+    }
+
+    private Integer getCurrentDayOfMonth() {
+        Calendar calendar = Calendar.getInstance();
+        return calendar.get(Calendar.DAY_OF_MONTH);
     }
 }
