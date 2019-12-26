@@ -10,6 +10,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,6 +28,15 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import ru.startandroid.sendmeters.model.Counter;
 import ru.startandroid.sendmeters.model.CounterList;
@@ -124,15 +134,24 @@ public class SendEmailActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void createEmail() {
-        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        /*Intent emailIntent = new Intent(Intent.ACTION_SEND);
         //для того чтобы запросить email клиент устанавливаем тип
-        emailIntent.setType("text/html");
+        *//*emailIntent.setType("text/html");
         emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{getResources().getString(R.string.EmailTo)});
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, getSubjectEmail());
         emailIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(getTextEmail()));
         startActivity(Intent.createChooser(emailIntent, "Выберите email клиент :"));
         finish();
-        saveToPreference(MONTH_SEND, getCurrentMonth());
+
+       {*/ try {
+                    GMailSender sender = new GMailSender("divesrantiers@gmail.com", "8Idivesrantiers24");
+                    sender.sendMail("EmailSender App",
+                            "This is the message body",
+                            "divesrantiers@gmail.com",
+                            "mail19861@rambler.ru");
+        } catch (Exception e) {
+            Log.e("mylog", "Error: " + e.getMessage());
+        }
     }
 
     private String getSubjectEmail() {
